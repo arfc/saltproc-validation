@@ -1,0 +1,264 @@
+include "../geometry/tmsr_full"
+
+% --- Cross section data library file path:
+
+%set acelib "/xs/sss_jeff311u.xsdata"
+%set acelib "/mnt/pool/2/osama.ashraf/Serpent/xsdata/endfb7/sss_endfb7u.xsdata"
+set acelib "sss_endfb7.xsdata"
+
+%set declib "/mnt/pool/2/osama.ashraf/Serpent/xsdata/endfb7/sss_endfb7.dec"
+set declib "sss_endfb7.dec"
+
+%set nfylib "/mnt/pool/2/osama.ashraf/Serpent/xsdata/endfb7/sss_endfb7.nfy"
+set nfylib "sss_endfb7.nfy"
+
+% --- Neutron population and criticality cycles:
+
+ set pop  10000  500   20
+     set gcu -1
+   %set nbuf 15
+
+
+% --- SDMSR -------------------
+
+set title "SD-TMSR"
+
+/************************
+ * Material definitions *
+ ************************/
+
+mat graphite        -2.3       tmp 900  burn 1  vol 1.5941E+08         moder graphiteLib   6000 % rgb 255 255 150burn 1                  %vol 8.2e6
+ 6000.09c          -1.00
+therm graphiteLib  grj3.00t
+
+mat fuel      -3.3   tmp 900  burn 1   vol  5.2997E+07     rgb 150  255  150       % 1.6 + 10.9% burn 1  fuel salt  vol 5.535e6
+           3007.09c        -0.075330936
+		   3006.09c        -3.76674E-06
+		   4009.09c        -0.024276994
+		   92233.09c       -0.007541239
+    	   90232.09c       -0.439446175
+		   9019.09c        -0.45340089
+
+
+mat B4C    -2.52   vol  2.9194E+07      %rgb 100 130 150boron carbide shielding layer
+           6000.09c   -0.2173753
+           5010.09c   -0.1440029
+           5011.09c   -0.6386217
+
+
+
+mat hastelloy  -8.86   vol  2.2225E+07    %outer core shell hastelloy (SiC?)
+
+           28058.09c   0.472110471
+           28060.09c   0.181855147
+           28061.09c   0.007905841
+           28062.09c   0.025201602
+           28064.09c   0.006421762
+           24050.09c   0.002970795
+           24052.09c   0.057288826
+           24053.09c   0.006496093
+           24054.09c   0.001617015
+           42092.09c   0.02319203
+           42094.09c   0.014455948
+           42095.09c   0.024879859
+           42096.09c   0.026067591
+           42097.09c   0.01492479
+           42098.09c   0.03771049
+           42100.09c   0.015049814
+           26054.09c   0.003399101
+           26056.09c   0.053752686
+           26057.09c   0.001289314
+           26058.09c   0.000164095
+           14028.09c   0.009008595
+           14029.09c   0.000456144
+           14030.09c   0.000302794
+           25055.09c   0.007814026
+           6000.09c    0.000781403
+           74182.09c   0.001294198
+           74183.09c   0.000698867
+           74184.09c   0.001496386
+           74186.09c   0.001388455
+
+% --- Geometry and mesh plots:
+%plot 3   1000  1000   235
+plot 3   1000  1000   0
+%plot 3   1000  1000   250
+ plot 1  500  500   0
+ plot 2  500 500   0
+
+mesh 1 500 500
+mesh 2 500 500
+mesh 3 500 500
+
+% -checkvolumes 1000000
+  %set mcvol 100000000
+
+ /***************************************
+ * Settings for the burnup calculation *
+ ***************************************/
+
+
+% --- Material division for burnup calculation
+
+%div  fuel      sep 1
+%div  graphite  sep 1
+
+
+
+
+% --- Nuclide inventory: these nuclides will be included in the
+%     depletion output file burn_dep.m. The list can be changed
+%     after the simulation has concluded if needed. Then you can run
+%     sss2 -rdep burn
+%     which will make Serpent re-read the inventory and re-produce the
+%     depletion output file.
+
+set inventory
+all
+
+
+% --- Use predictor corrector method for the depletion solution
+%     leli: Linear extrapolation on predictor
+%           Linear interpolation on corrector
+%     10 10: 10 substeps on predictor, 10 substeps on corrector
+
+%set pcc leli 10 10
+
+set opti 1
+
+% --- Reduce unionized energy grid size in order to save some memory
+%     Use grid thinning with 5e-5 reconstruction tolerance between
+%     1e-9 and 15 MeV.
+
+set egrid 5e-5 1e-9 15.0
+
+  set power  2250e6
+
+
+ %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM
+
+% --- Cut-offs:
+
+set fpcut   1E-6
+set stabcut 1E-12
+
+% --- Options for burnup calculation:
+
+set bumode  2  % CRAM method
+set pcc     0  % Predictor-corrector calculation on
+set xscalc  2  % Cross sections from spectrum
+ set gcu -1
+
+%set printm 1
+mflow  rem1
+
+Ne 1E-2
+Ar 1E-2
+He 1E-2
+Kr 1E-2
+Xe 1
+Rn 1E-2
+H  1E-2
+N  1E-2
+O  1E-2
+Ga 1E-4
+As 1E-4
+Se 1E-4
+Br 1E-4
+Rb 1E-4
+Sr 1E-4
+Y  1E-4
+Zr 1E-4
+Nb 1E-5
+Mo 1E-5
+Tc 1E-5
+Ru 1E-5
+Pd 1E-5
+Ag 1E-5
+Cd 1E-4
+In 1E-4
+Sn 1E-4
+Sb 1E-5
+Te 1E-5
+I  1E-4
+Cs 1E-4
+Ba 1E-4
+La 1E-4
+Ce 1E-4
+Pr 1E-4
+Nd 1E-4
+Pm 1E-4
+Sm 1
+Eu 1E-4
+Gd 1E-4
+Tb 1E-4
+Dy 1E-4
+Ho 1E-4
+Er 1E-4
+Pa 1E-2
+Np 1E-4
+Am 1E-4
+Cm 1E-4
+Fe 1E-4
+Co 1E-4
+Ni 1E-4
+Cu 1E-4
+Zn 1E-4
+Ge 1E-4
+As 1E-4
+Se 1E-4
+Br 1E-4
+Rh 1E-5
+Hg 1E-4
+Tl 1E-4
+Pb 1E-4
+Bi 1E-4
+Po 1E-4
+At 1E-4
+Fr 1E-4
+Ra 1E-4
+Ac 1E-4
+Bk 1E-4
+Cf 1E-4
+Tm 1E-4
+Yb 1E-4
+
+
+
+mat gastank  0.0 burn 1 vol 1e6
+
+mat extrafuel  0.0  burn 1 vol 1e6
+
+mat add    -18.95  burn 1  vol  1e6
+92233.09c   0.25
+90232.09c   0.75
+
+
+
+
+mflow feed1
+U-233   0.08e-7
+Th-232  0.32e-7
+
+mflow  feed2
+all    0.05e-7
+
+
+rep r1
+rc fuel  gastank   rem1  1
+rc add   fuel     feed1  0
+rc fuel  extrafuel  feed2  1
+
+
+dep  pro r1
+daystep 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730
+
+   % pro r1   730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730 730
+set depmtx 1
+
+ set rfw  1  OSAMA
+
+
+
+
+% ------------------------------------------------------------------
