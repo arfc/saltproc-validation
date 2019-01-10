@@ -1,0 +1,151 @@
+% --- SD-TMSR full-core geometry:
+
+surf g1    cyl     0   0   280                    %core
+
+%surf g2   cyl     0   0   280                    %graphite
+
+surf g3    cyl     0   0   290                    %boron carbide shielding layer
+%surf g31   cyl     0   0   5
+
+surf g4    cyl     0   0   300                    % IHX
+%surf g41  cyl     0   0   300                    %graphite
+
+surf g5    cyl     0   0   310                    %B4C  
+
+surf g6    cyl     0   0   320                % H-alloy
+surf g7    pz      390
+surf g8    pz      400
+surf g9    pz      410
+surf g10   pz     -390
+surf g11   pz     -400
+surf g12   pz     -410
+surf k3    cyl  0  0  5
+surf k1    pz  -260
+surf k2    pz  -230
+surf k5    pz  230
+surf k6    pz  260
+
+
+cell  cg1    0  fill core       -g1  k3  k2  -k5
+
+%cell  cg2   0   graphite       g1   -g2  k2  -k5
+
+cell  cg3    0   B4C             g1  -g3    k2   -k5
+cell  cg31   0  graphite         -g7  g10 -k3
+
+ %cell  cg31   0   graphite      -k3  k1  -k2
+ %cell  cg32   0   graphite      -k3  k5  -k6
+
+cell  cg4    0   fuel            g3     -g4       k1    -k6
+cell cg45    0   fuel            k1  -k2  -g1  k3
+cell cg46    0   fuel            k5  -k6   -g1  k3
+cell cg43    0     fuel         -k6   k5     -g3  g1
+cell cg44    0     fuel          k1  -k2   -g3   g1
+
+
+cell cg41    0    graphite       -g4  k3  k6   -g7
+cell cg42    0    graphite       -g4  k3    -k1  g10
+
+
+
+
+cell  cg5   0   B4C              g4    -g5  -g7    g10
+
+cell  cg6   0   hastelloy        g5  -g6  -g8 g11
+
+cell cg7    0   B4C              g7  -g8  -g5
+cell cg8    0   hastelloy        g8  -g9  -g6
+cell cg10   0   B4C             -g10  g11  -g5
+cell cg11   0   hastelloy        g12  -g11  -g6
+
+
+cell cg50   0   outside      g6
+
+
+% --- Reflective boundary condition:
+
+
+ set bc  1
+
+
+% --- Hex Graphite with central pipe 7.5cm inner:
+
+surf  k4   hexxprism  0   0   6.495   -230  230
+surf  k15   cyl       0   0   3.5
+
+
+cell  ck4  f  graphite      -k4    k15      k1  -k5
+cell  ck7  f  fuel         -k15   k2  -k5
+
+
+
+cell cj1    j  graphite        -k4   k3          k1  -k5
+cell cj2    j  fuel            -k3  k2  -k5
+
+
+cell  ch1   h  graphite      -k4     k1  -k5
+
+
+ cell  cp1  p  graphite      -k4   k3      k1  -k5
+
+
+
+pin v
+void
+
+
+% --- Lattice (type = 2  pin pitch = 13 cm):
+
+lat core  2  0.0 0.0  51 51  12.99
+
+v v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h
+ v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h
+  v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+   v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+    v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+     v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+      v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+       v v v v v v v v v v v v v v v v v v h h h h h h h h h j j j j j j j j j j j j j j j h h h h h h h h h
+        v v v v v v v v v v v v v v v v v h h h h h h h h j j j j j j j j j j j j j j j j j j h h h h h h h h
+         v v v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j h h h h h h h
+          v v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j j h h h h h h h
+           v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j j j h h h h h h h
+            v v v v v v v v v v v v v h h h h h h h j j j j j j j j j f f f f f f j j j j j j j j j h h h h h h h
+             v v v v v v v v v v v v h h h h h h h j j j j j j j j f f f f f f f f f j j j j j j j j h h h h h h h
+              v v v v v v v v v v v h h h h h h h j j j j j j j f f f f f f f f f f f f j j j j j j j h h h h h h h
+               v v v v v v v v v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f j j j j j j h h h h h h h
+                v v v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                 v v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                  v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                   v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                    v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                     v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                      v v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h
+                       v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h
+                        v h h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h h
+                         h h h h h h h h j j j j j j f f f f f f f f f f f p f f f f f f f f f f f j j j j j j h h h h h h h h
+                          h h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h h v
+                           h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v
+                            h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v v
+                             h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v
+                              h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v
+                               h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v
+                                h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v
+                                 h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v v
+                                  h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v v v
+                                   h h h h h h h j j j j j j f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v v v v v v v v v
+                                    h h h h h h h j j j j j j j f f f f f f f f f f f f j j j j j j j h h h h h h h v v v v v v v v v v v
+                                     h h h h h h h j j j j j j j j f f f f f f f f f j j j j j j j j h h h h h h h v v v v v v v v v v v v
+                                      h h h h h h h j j j j j j j j j f f f f f f j j j j j j j j j h h h h h h h v v v v v v v v v v v v v
+                                       h h h h h h h j j j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v
+                                        h h h h h h h j j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v v
+                                         h h h h h h h j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v v v
+                                          h h h h h h h h j j j j j j j j j j j j j j j j j j h h h h h h h h v v v v v v v v v v v v v v v v v
+                                           h h h h h h h h h j j j j j j j j j j j j j j j h h h h h h h h h v v v v v v v v v v v v v v v v v v
+                                            h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v
+                                             h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v
+					      h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v
+					       h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v
+					        h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v
+					         h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v v
+						  h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v v v

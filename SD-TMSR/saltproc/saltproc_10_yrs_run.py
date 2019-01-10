@@ -19,7 +19,7 @@ db_file = 'db_saltproc.hdf5'           # HDF5 database name
 # output from Serpent
 # Path and name of file with materials data (input for Serpent)
 mat_file = 'fuel_comp'
-cores = 128                          # Number of OMP cores to use
+cores = 4%128                          # Number of OMP cores to use
 nodes = 8                          # Number of nodes by defaule
 bw = 'False'                       # Not cluster by default
 steps = 961                          # 5 fuel cycle steps by default
@@ -109,9 +109,10 @@ def read_res(inp_filename, moment):             # moment=0 for BOC and moment=1 
     res_filename = os.path.join(inp_filename + "_res.m")
     res = serpent.parse_res(res_filename)
     keff_analytical = res['IMP_KEFF']
+    breeding_ratio  = res['CONVERSION_RATIO']
     # Value Keff and uncertantly for the moment (two values in list: BOS and
     # EOS)
-    return keff_analytical[moment, :]
+    return keff_analytical[moment, :], breeding_ratio[moment, :]
 
 # Read bumat# Serpent file and parse name of isotope, atomic density and
 # general fuel description (material_def)
@@ -140,8 +141,8 @@ def read_bumat(file_name, moment):  # moment=0 for BoC, moment=1 for EoC
 
 
 def write_mat_file(file_name, isolib, bu_adens, fuel_intro, current_step):
-    ana_keff_boc = read_res(sss_input_file, 0)
-    ana_keff_eoc = read_res(sss_input_file, 1)
+    ana_keff_boc, br_boc = read_res(sss_input_file, 0)
+    ana_keff_eoc, br_eoc = read_res(sss_input_file, 1)
     matf = open(file_name, 'w')
     matf.write(
         '% Step number #' +
@@ -174,7 +175,8 @@ def run_serpent(input_filename, cores):
             input_filename)
     else:
         args = (
-            "/mnt/pool/3/osama.ashraf/Serpent/src/sss2",
+            #"/mnt/pool/3/osama.ashraf/Serpent/src/sss2",
+            "/home/andrei2/serpent/serpent2/src_2130/sss2",
             "-omp",
             str(cores),
             input_filename)
@@ -281,6 +283,12 @@ def main():
             keff_db_0 = f.create_dataset('keff_BOC',
                                          (2, steps), maxshape=(2, None),
                                          chunks=True)
+            BR_db_0 = f.create_dataset(
+                'BR_BOC', (2, steps), maxshape=(
+                    2, None), chunks=True)
+            BR_db_1 = f.create_dataset(
+                'BR_EOC', (2, steps), maxshape=(
+                    2, None), chunks=True)
             bu_adens_db_0 = f.create_dataset(
                 'core adensity before reproc',
                 (steps + 1,
@@ -336,6 +344,8 @@ def main():
             f = h5py.File(db_file, 'r+')
             keff_db = f['keff_EOC']
             keff_db_0 = f['keff_BOC']
+            BR_db_0 = f['BR_BOC']
+            BR_db_1 = f['BR_EOC']
             bu_adens_db_0 = f['core adensity before reproc']
             bu_adens_db_1 = f['core adensity after reproc']
             tank_adens_db = f['tank adensity']
@@ -380,8 +390,8 @@ def main():
         print('Cycle number %s of %s steps' % (i, steps + lasti))
         # Write K_eff, core composition, Pa decay tank composition, noble gases
         # tank composition in database
-        keff_db  [:, i - 1] = read_res(sss_input_file, 1)
-        keff_db_0[:, i - 1] = read_res(sss_input_file, 0)
+        keff_db  [:, i-1],BR_db_1[:, i-1] = read_res(sss_input_file, 1)
+        keff_db_0[:, i-1],BR_db_0[:, i-1] = read_res(sss_input_file, 0)
         bu_adens_db_1[i, :] = bu_adens_arr
         tank_adens_db[i, :] = tank_adens_db[i - 1, :] + tank_adens_db[i, :]
         noble_adens_db[i, :] = noble_adens_db[i - 1, :] + rem_adens.sum(axis=0)
@@ -390,8 +400,8 @@ def main():
                                             th232_id] - (bu_adens_db_0[0,
                                                                        th232_id] - bu_adens_db_0[i,
                                                                                                  th232_id])  # Store amount of Th in tank
-	# Save detector data in file
-        shutil.copy('core_det0.m', 'det/core_det_'+str(i))
+	    # Save detector data in file
+        #shutil.copy('core_det0.m', 'det/core_det_'+str(i))
         f.close()  # close DB
 
 
