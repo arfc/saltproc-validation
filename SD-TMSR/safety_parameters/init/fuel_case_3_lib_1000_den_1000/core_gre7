@@ -1,0 +1,431 @@
+include "../../../geometry/tmsr_full"
+% --- Cross section data library file path:
+
+%set acelib "/xs/sss_jeff311u.xsdata"
+set acelib "sss_endfb7.xsdata"
+
+set declib "sss_endfb7.dec"
+
+set nfylib "sss_endfb7.nfy"
+
+% --- Neutron population and criticality cycles:
+
+ set pop  15000  500   30
+    % set gcu -1
+   %set nbuf 15
+
+
+% --- SDMSR -------------------
+
+set title "SD-TMSR moderator at 900K, fuel at 1000K"
+
+/************************
+ * Material definitions *
+ ************************/
+
+mat graphite  -2.3 tmp 900 vol 1.5941E+08 moder graphiteLib   6000 % rgb 255 255 150burn 1                  %vol 8.2e6
+ 6000.09c     -1.00
+% therm graphiteLib  grj3.00t
+therm graphiteLib 900 gre7.18t gre7.20t     % 900K graphite
+% therm graphiteLib  grj3.22t               % 1200K graphite
+
+mat fuel      -3.233   tmp 1000  vol  5.2997E+07     rgb 150  255  150       % 1.6 + 10.9% burn 1  fuel salt  vol 5.535e6
+           	3007.09c        -0.075330936
+		3006.09c        -3.76674E-06
+	        4009.09c        -0.024276994
+	       92233.09c        -0.007541239
+               90232.09c        -0.439446175
+                9019.09c        -0.45340089
+
+
+mat B4C    -2.52   vol  2.9194E+07      %rgb 100 130 150boron carbide shielding layer
+           6000.09c   -0.2173753
+           5010.09c   -0.1440029
+           5011.09c   -0.6386217
+
+
+
+mat hastelloy  -8.86   vol  2.2225E+07    %outer core shell hastelloy (SiC?)
+
+           28058.09c   0.472110471
+           28060.09c   0.181855147
+           28061.09c   0.007905841
+           28062.09c   0.025201602
+           28064.09c   0.006421762
+           24050.09c   0.002970795
+           24052.09c   0.057288826
+           24053.09c   0.006496093
+           24054.09c   0.001617015
+           42092.09c   0.02319203
+           42094.09c   0.014455948
+           42095.09c   0.024879859
+           42096.09c   0.026067591
+           42097.09c   0.01492479
+           42098.09c   0.03771049
+           42100.09c   0.015049814
+           26054.09c   0.003399101
+           26056.09c   0.053752686
+           26057.09c   0.001289314
+           26058.09c   0.000164095
+           14028.09c   0.009008595
+           14029.09c   0.000456144
+           14030.09c   0.000302794
+           25055.09c   0.007814026
+           6000.09c    0.000781403
+           74182.09c   0.001294198
+           74183.09c   0.000698867
+           74184.09c   0.001496386
+           74186.09c   0.001388455
+
+
+% --- Geometry and mesh plots:
+%plot 3   1000  1000   235
+%plot 3   1000  1000   0
+%plot 3   1000  1000   250
+% plot 1  500  500   0
+% plot 2  500 500   0
+
+%mesh 1 500 500
+%mesh 2 500 500
+%mesh 3 500 500
+
+% -checkvolumes 1000000
+  %set mcvol 100000000
+
+ /***************************************
+ * Settings for the burnup calculation *
+ ***************************************/
+
+
+% --- Material division for burnup calculation
+
+%div  fuel      sep 1
+%div  graphite  sep 1
+
+
+
+
+% --- Nuclide inventory: these nuclides will be included in the
+%     depletion output file burn_dep.m. The list can be changed
+%     after the simulation has concluded if needed. Then you can run
+%     sss2 -rdep burn
+%     which will make Serpent re-read the inventory and re-produce the
+%     depletion output file.
+
+set inventory
+all
+
+
+% --- Use predictor corrector method for the depletion solution
+%     leli: Linear extrapolation on predictor
+%           Linear interpolation on corrector
+%     10 10: 10 substeps on predictor, 10 substeps on corrector
+
+%set pcc leli 10 10
+
+% set opti 1
+
+% --- Reduce unionized energy grid size in order to save some memory
+%     Use grid thinning with 5e-5 reconstruction tolerance between
+%     1e-9 and 15 MeV.
+
+set egrid 5e-5 1e-9 15.0
+
+  set power  2250e6
+
+
+ %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM
+
+% --- Cut-offs:
+/*
+set fpcut   1E-6
+% set stabcut 1E-12
+
+% --- Options for burnup calculation:
+
+set bumode  2  % CRAM method
+set pcc     0  % Predictor-corrector calculation on
+set xscalc  2  % Cross sections from spectrum
+ set gcu -1
+
+%set printm 1
+
+mflow  rem1
+H	3.333E-2
+He	3.333E-2
+N	3.333E-2
+O	3.333E-2
+Ne	3.333E-2
+Ar	3.333E-2
+Kr	3.333E-2
+Nb	3.333E-2
+Mo	3.333E-2
+Tc	3.333E-2
+Ru	3.333E-2
+Rh	3.333E-2
+Pd	3.333E-2
+Ag	3.333E-2
+Sb	3.333E-2
+Te	3.333E-2
+Xe	3.333E-2
+Lu	3.333E-2
+Hf	3.333E-2
+Ta	3.333E-2
+W	3.333E-2
+Re	3.333E-2
+Os	3.333E-2
+Ir	3.333E-2
+Pt	3.333E-2
+Au	3.333E-2
+Rn	3.333E-2
+
+Zn	1.09195E-6
+Ga	1.09195E-6
+Ge	1.09195E-6
+As	1.09195E-6
+Se	1.09195E-6
+Br	1.09195E-6
+Rb	1.09195E-6
+Sr	1.09195E-6
+Y	1.09195E-6
+Zr	1.09195E-6
+Cd	1.09195E-6
+In	1.09195E-6
+Sn	1.09195E-6
+I	1.09195E-6
+Cs	1.09195E-6
+Ba	1.09195E-6
+La	1.09195E-6
+Ce	1.09195E-6
+Pr	1.09195E-6
+Nd	1.09195E-6
+Pm	1.09195E-6
+Sm	1.09195E-6
+Eu	1.09195E-6
+Gd	1.09195E-6
+Tb	1.09195E-6
+Dy	1.09195E-6
+Ho	1.09195E-6
+Er	1.09195E-6
+Tm	1.09195E-6
+Yb	1.09195E-6
+
+mflow rem2
+Pa	1.09195E-6
+
+mflow feed1
+U-233   6.4e-9
+Th-232  1.5e-9
+
+mat add    -18.95  burn 1  vol  1e6
+92233.09c   0.25
+90232.09c   0.75
+
+mat gastank  0.0 burn 1 vol 1e6
+
+mat pa_tank  0.0 burn 1 vol 1e6
+
+
+rep r1
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed1   0
+
+dep  pro r1
+daystep
+90
+
+
+mflow feed2
+U-233   4.9E-9
+Th-232  2.05E-9
+
+rep r2
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed2   0
+
+
+dep  pro r2
+daystep
+365
+365
+365
+365
+
+
+
+
+mflow feed9
+U-233   4.75E-9
+Th-232  2.05E-9
+
+rep r9
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed9  0
+
+
+dep  pro r9
+daystep
+365
+365
+365
+365
+
+
+mflow feed3
+U-233   4.475E-9
+Th-232  1.9E-9
+
+rep r3
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed3   0
+
+
+dep  pro r3
+daystep
+365
+365
+365
+365
+365
+365
+365
+365
+
+
+
+
+mflow feed4
+U-233   4.5E-9
+Th-232  1.85E-9
+
+rep r4
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed4  0
+
+dep  pro r4
+daystep
+
+365
+365
+365
+365
+
+mflow feed10
+U-233   4.25E-9
+Th-232  1.8E-9
+
+rep r10
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed10  0
+
+dep  pro r10
+daystep
+365
+365
+365
+365
+365
+365
+
+
+mflow feed5
+U-233   4.25E-9
+Th-232  1.8E-9
+
+rep r5
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed5  0
+
+dep  pro r5
+daystep
+
+365
+365
+365
+365
+365
+365
+365
+365
+
+
+
+mflow feed6
+U-233   4.15E-9
+Th-232  1.75E-9
+
+rep r6
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed6   0
+
+dep  pro r6
+daystep
+
+365
+365
+365
+365
+365
+365
+365
+365
+
+mflow feed7
+U-233   4.15E-9
+Th-232  1.75E-9
+
+rep r7
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed7   0
+
+dep  pro r7
+daystep
+365
+365
+365
+365
+365
+365
+365
+365
+
+
+mflow feed8
+U-233   4.05E-9
+Th-232  1.7E-9
+
+rep r8
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed8   0
+
+dep  pro r8
+daystep
+
+365
+365
+365
+365
+365
+365
+365
+365
+365
+275
+
+
+set depmtx 1
+
+set rfw  1  OSAMA
+
+*/
+% ----------------------------------------------------------------
