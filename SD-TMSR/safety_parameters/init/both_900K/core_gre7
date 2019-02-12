@@ -10,7 +10,7 @@ set nfylib "sss_endfb7.nfy"
 
 % --- Neutron population and criticality cycles:
 
- set pop  75000  800   130
+ set pop  15000  800   130
   %   set gcu -1
    %set nbuf 15
 
@@ -130,8 +130,8 @@ all
 
 % set egrid 5e-5 1e-9 15.0
 
-%  set power  2250e6
-
+set power  562.5e6 % 1/4 of full power 2.25Gwth
+set lost -1
 
  %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM
 
@@ -146,370 +146,73 @@ set bumode  2  % CRAM method
 set pcc     0  % Predictor-corrector calculation on
 set xscalc  2  % Cross sections from spectrum
 
-%set printm 1
-/*
-mflow  rem1
-H	3.333E-2
-He	3.333E-2
-N	3.333E-2
-O	3.333E-2
-Ne	3.333E-2
-Ar	3.333E-2
-Kr	3.333E-2
-Nb	3.333E-2
-Mo	3.333E-2
-Tc	3.333E-2
-Ru	3.333E-2
-Rh	3.333E-2
-Pd	3.333E-2
-Ag	3.333E-2
-Sb	3.333E-2
-Te	3.333E-2
-Xe	3.333E-2
-Lu	3.333E-2
-Hf	3.333E-2
-Ta	3.333E-2
-W	3.333E-2
-Re	3.333E-2
-Os	3.333E-2
-Ir	3.333E-2
-Pt	3.333E-2
-Au	3.333E-2
-Rn	3.333E-2
-
-Zn	1.09195E-6
-Ga	1.09195E-6
-Ge	1.09195E-6
-As	1.09195E-6
-Se	1.09195E-6
-Br	1.09195E-6
-Rb	1.09195E-6
-Sr	1.09195E-6
-Y	1.09195E-6
-Zr	1.09195E-6
-Cd	1.09195E-6
-In	1.09195E-6
-Sn	1.09195E-6
-I	1.09195E-6
-Cs	1.09195E-6
-Ba	1.09195E-6
-La	1.09195E-6
-Ce	1.09195E-6
-Pr	1.09195E-6
-Nd	1.09195E-6
-Pm	1.09195E-6
-Sm	1.09195E-6
-Eu	1.09195E-6
-Gd	1.09195E-6
-Tb	1.09195E-6
-Dy	1.09195E-6
-Ho	1.09195E-6
-Er	1.09195E-6
-Tm	1.09195E-6
-Yb	1.09195E-6
-
-mflow rem2
-Pa	1.09195E-6
-
-mflow feed1
-U-233   6.4e-9
-Th-232  1.5e-9
-
-mat add    -18.95  burn 1  vol  1e6
-92233.09c   0.25
-90232.09c   0.75
-
-mat gastank  0.0 burn 1 vol 1e6
-
-mat pa_tank  0.0 burn 1 vol 1e6
-
-
-rep r1
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed1   0
-
-dep  pro r1
-daystep
-90
-
-
-mflow feed2
-U-233   4.9E-9
-Th-232  2.05E-9
-
-rep r2
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed2   0
-
-
-dep  pro r2
-daystep
-365
-365
-365
-365
-
-
-
-
-mflow feed9
-U-233   4.75E-9
-Th-232  2.05E-9
-
-rep r9
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed9  0
-
-
-dep  pro r9
-daystep
-365
-365
-365
-365
-
-
-mflow feed3
-U-233   4.475E-9
-Th-232  1.9E-9
-
-rep r3
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed3   0
-
-
-dep  pro r3
-daystep
-365
-365
-365
-365
-365
-365
-365
-365
-
-
-
-
-mflow feed4
-U-233   4.5E-9
-Th-232  1.85E-9
-
-rep r4
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed4  0
-
-dep  pro r4
-daystep
-
-365
-365
-365
-365
-
-mflow feed10
-U-233   4.25E-9
-Th-232  1.8E-9
-
-rep r10
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed10  0
-
-dep  pro r10
-daystep
-365
-365
-365
-365
-365
-365
-
-
-mflow feed5
-U-233   4.25E-9
-Th-232  1.8E-9
-
-rep r5
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed5  0
-
-dep  pro r5
-daystep
-
-365
-365
-365
-365
-365
-365
-365
-365
-
-
-
-mflow feed6
-U-233   4.15E-9
-Th-232  1.75E-9
-
-rep r6
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed6   0
-
-dep  pro r6
-daystep
-
-365
-365
-365
-365
-365
-365
-365
-365
-
-mflow feed7
-U-233   4.15E-9
-Th-232  1.75E-9
-
-rep r7
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed7   0
-
-dep  pro r7
-daystep
-365
-365
-365
-365
-365
-365
-365
-365
-
-
-mflow feed8
-U-233   4.05E-9
-Th-232  1.7E-9
-
-rep r8
-rc fuel   gastank   rem1    1
-rc fuel   pa_tank   rem2    1
-rc add    fuel      feed8   0
-
-dep  pro r8
-daystep
-
-365
-365
-365
-365
-365
-365
-365
-365
-365
-275
-
-
-set depmtx 1
-
-set rfw  1  OSAMA
-
-*/
 % ----------------------------------------------------------------
 
 %_____________________ Output_____________%
 
 % --- Detector energy grid (uniform lethargy):
-ene tot 3 1000 1E-9 12.0
+ene tot 3 1000 1E-9 20.0
 ene 2 1 1E-11 0.625E-6 % Detector energy grid (thermal single bin)
-ene 1 1 0.625E-6 12.0  % Fast energy grid single bin
-ene 3 1 1E-11 12.00    % One total single bin
+ene 1 1 0.625E-6 20.0  % Fast energy grid single bin
+ene 3 1 1E-11 20.00    % One total single bin
 ene 4 1 1E-5 5E-3      % Resonances egion for Th-232 (MeV)
-% --- Flux per lethargy all over core
-det avrg de tot dt -3
-
-% --- Flux per lethargy in zone I (lattice 1):
-% det 1 de tot du 1 dt -3
-
-% --- Flux per lethargy in zone II (lattice 2):
-% det 2 de tot du 2 dt -3
 
 %----Power generation in 2-D 30x30 bins
 det powxy
-dr -8 fuel
-de 3
-dx 0.0 345.0 345
-dy 0.0 345.0 345
-dz 0.0 449.58 1
+dr -8 void
+dx 0.0 320.0 320
+dy 0.0 320.0 320
+dz -260 260 1
 
 %----Fissions generation in 2-D 30x30 bins
 det fisxy
-dr -6 fuel
-de 3
-dx 0.0 345.0 345
-dy 0.0 345.0 345
-dz 0.0 449.58 1
+dr -6 void
+dx 0.0 320.0 320
+dy 0.0 320.0 320
+dz -260 260 1
 
-%----Breeding in resonances region
 mat TH232 1.0 90232.09c 1.0
-det breeding_res
-dm fuel
-dr 102 TH232 %===capture===
-de 4         %===resonances
-dx 0.0 345.0 345
-dy 0.0 345.0 345
-dz 0.0 449.58 1
+
 
 %----Breeding overall
 det breeding
 dm fuel
 dr 102 TH232 %===capture===
 de 3         %===overall spectrum
-dx 0.0 345.0 345
-dy 0.0 345.0 345
-dz 0.0 449.58 1
+dx 0.0 320.0 320
+dy 0.0 320.0 320
+dz -260 260 1
 
 %========== Total flux radial
 det flux_rad
 de 3
-dx 0.0 345.0 345
+dx 0.0 320.0 320
 
 %=============Total flux 2D 345x345 pins for normalization
 det fluxxy
 de 3
-dx 0.0 345.0 345
-dy 0.0 345.0 345
-dz 0.0 449.58 1
+dx 0.0 320.0 320
+dy 0.0 320.0 320
+dz -260 260 1
 
 %--- Thermal flux
 det flux_rad2
 de 2
-dx 0.0 345.0 345
+dx 0.0 320.0 320
 %---Fast flux
 det flux_rad1
 de 1
-dx 0.0 345.0 345
+dx 0.0 320.0 320
 
 %====== Total axial flux
 det flux_axial
 de 3
-dz -50.0 450.0 200
+dz -390.0 390.0 780
 %========Thermal
 det flux_axial2
 de 2
-dz -50.0 450.0 200
+dz -390.0 390.0 780
 %=======Fast
 det flux_axial1
 de 1
-dz -50.0 450.0 200
+dz -390.0 390.0 780
