@@ -10,7 +10,7 @@ set nfylib "sss_endfb7.nfy"
 
 % --- Neutron population and criticality cycles:
 
- set pop  50000  800   130
+ set pop  75000  800   130
 %     set gcu -1
    %set nbuf 15
 

@@ -10,7 +10,7 @@ set nfylib "sss_endfb7.nfy"
 
 % --- Neutron population and criticality cycles:
 
- set pop  15000  800   130
+ set pop  75000  800   130
   %   set gcu -1
    %set nbuf 15
 
@@ -157,16 +157,27 @@ ene 1 1 0.625E-6 20.0  % Fast energy grid single bin
 ene 3 1 1E-11 20.00    % One total single bin
 ene 4 1 1E-5 5E-3      % Resonances egion for Th-232 (MeV)
 
+% --- Flux per lethargy all over core
+det avrg de tot dt -3
+
+% --- Flux per lethargy in zone I (lattice f):
+det 1 de tot du f dt -3
+
+% --- Flux per lethargy in zone II (lattice j):
+det 2 de tot du j dt -3
+
 %----Power generation in 2-D 30x30 bins
 det powxy
-dr -8 void
+dr -8 fuel
+de 3
 dx 0.0 320.0 320
 dy 0.0 320.0 320
 dz -260 260 1
 
 %----Fissions generation in 2-D 30x30 bins
 det fisxy
-dr -6 void
+dr -6 fuel
+de 3
 dx 0.0 320.0 320
 dy 0.0 320.0 320
 dz -260 260 1
