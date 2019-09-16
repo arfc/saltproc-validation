@@ -1,7 +1,7 @@
 % --- Cross section data library file path:
 
 set acelib "sss_jeff312.xsdata"
-
+%
 set declib "sss_jeff33.dec"
 
 % --- Neutron population and criticality cycles:
@@ -284,8 +284,8 @@ v v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h 
 
 % --- Cut-offs:
 
-set fpcut   1E-6
-set stabcut 1E-12
+%set fpcut   1E-6
+%set stabcut 1E-12
 
 % --- Options for burnup calculation:
 

@@ -270,7 +270,7 @@ v v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h 
 
 %set pcc leli 10 10
 
-%set opti 1
+set opti 1
 
 % --- Reduce unionized energy grid size in order to save some memory
 %     Use grid thinning with 5e-5 reconstruction tolerance between
