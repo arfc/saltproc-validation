@@ -1,0 +1,2413 @@
+ 
+% --- Cross section data library file path:
+
+%set acelib "/xs/sss_jeff311u.xsdata"
+
+set acelib "/mnt/pool/4/osama.ashraf/xsdata/sss_endfb7u.xsdata"
+
+set declib "/mnt/pool/4/osama.ashraf/xsdata/sss_endfb7.dec"
+
+set nfylib "/mnt/pool/4/osama.ashraf/xsdata/sss_endfb7.nfy"
+
+% --- Neutron population and criticality cycles:
+
+
+ set pop  25000  500   50   
+   %  set gcu -1
+   set nbuf  70
+
+
+% --- SDMSR -------------------
+
+set title "SD-TMSR-TRU"
+
+%/************************
+% * Material definitions *
+% ************************/
+	
+mat graphite        -2.3       tmp 900   vol 1.5941E+08         moder graphiteLib   6000 % rgb 255 255 150burn 1                  %vol 8.2e6
+ 6000.09c          -1.00
+therm graphiteLib 900 gre7.18t gre7.20t % 900K graphite using ENDF/B-VII thermal data 
+
+mat fuel       -3.3   burn 1 tmp 900  vol  5.2997E+07     rgb 150  255  150       %  0.205   burn 1  (70	LiF, 17.5	BeF2, 8.65	ThF4, 3.85	TRUF3)
+
+3007.09c       -0.075321772
+3006.09c       -3.76628E-06
+4009.09c       -0.024451573
+90232.09c      -0.311173256
+93237.09c      -0.0090412
+94238.09c      -0.0038748
+94239.09c      -0.065871603
+94240.09c      -0.03085489
+94241.09c      -0.01535569
+94242.09c      -0.009615245
+95241.09c      -0.004879378
+95243.09c      -0.002726711
+96244.09c      -0.001148089
+96245.09c      -0.000143511
+9019.09c       -0.445538514
+
+
+mat B4C    -2.52   vol  2.9194E+07      %rgb 100 130 150boron carbide shielding layer
+           6000.09c   -0.2173753
+           5010.09c   -0.1440029
+           5011.09c   -0.6386217
+		   
+ 	
+		   
+mat hastelloy  -8.86   vol  2.2225E+07    %outer core shell hastelloy (SiC?)
+
+           28058.09c   0.472110471
+           28060.09c   0.181855147
+           28061.09c   0.007905841
+           28062.09c   0.025201602
+           28064.09c   0.006421762
+           24050.09c   0.002970795
+           24052.09c   0.057288826
+           24053.09c   0.006496093
+           24054.09c   0.001617015
+           42092.09c   0.02319203
+           42094.09c   0.014455948
+           42095.09c   0.024879859
+           42096.09c   0.026067591
+           42097.09c   0.01492479
+           42098.09c   0.03771049
+           42100.09c   0.015049814
+           26054.09c   0.003399101
+           26056.09c   0.053752686
+           26057.09c   0.001289314
+           26058.09c   0.000164095
+           14028.09c   0.009008595
+           14029.09c   0.000456144
+           14030.09c   0.000302794
+           25055.09c   0.007814026
+           6000.09c    0.000781403
+           74182.09c   0.001294198
+           74183.09c   0.000698867
+           74184.09c   0.001496386
+           74186.09c   0.001388455
+		   
+  
+
+% --- Geometry:
+
+
+surf g1    cyl     0   0   280                        %core  ????? ???? ???? ????? ????
+
+%surf g2   cyl     0   0   280                        %graphite
+ 
+surf g3    cyl     0   0   290                         %boron carbide shielding layer 
+%surf g31   cyl     0   0   5 
+ 
+surf g4    cyl     0   0   300                        % IHX
+%surf g41  cyl     0   0   300                    %graphite
+
+surf g5    cyl     0   0   310                       %B4C  
+ 
+surf g6    cyl     0   0   320                % H-alloy
+surf g7    pz      390
+surf g8    pz      400
+surf g9    pz      410
+surf g10   pz     -390
+surf g11   pz     -400
+surf g12   pz     -410
+surf k3    cyl  0  0  5
+surf k1    pz  -260
+surf k2    pz  -230
+surf k5    pz  230
+surf k6    pz  260
+
+
+cell  cg1    0  fill core       -g1  k3  k2  -k5
+
+%cell  cg2   0   graphite       g1   -g2  k2  -k5 
+
+cell  cg3    0   B4C             g1  -g3    k2   -k5            
+cell  cg31   0  graphite         -g7  g10 -k3
+
+ %cell  cg31   0   graphite      -k3  k1  -k2
+ %cell  cg32   0   graphite      -k3  k5  -k6
+
+cell  cg4    0   fuel            g3     -g4       k1    -k6  
+cell cg45    0   fuel            k1  -k2  -g1  k3
+cell cg46    0   fuel            k5  -k6   -g1  k3
+cell cg43    0     fuel         -k6   k5     -g3  g1
+cell cg44    0     fuel          k1  -k2   -g3   g1
+
+
+cell cg41    0    graphite       -g4  k3  k6   -g7    
+cell cg42    0    graphite       -g4  k3    -k1  g10
+
+
+
+
+cell  cg5   0   B4C              g4    -g5  -g7    g10   
+
+cell  cg6   0   hastelloy        g5  -g6  -g8 g11   
+
+cell cg7    0   B4C              g7  -g8  -g5
+cell cg8    0   hastelloy        g8  -g9  -g6
+cell cg10   0   B4C             -g10  g11  -g5
+cell cg11   0   hastelloy        g12  -g11  -g6 
+
+
+cell cg50   0   outside      g6
+cell cg51   0   outside       g9
+cell cg52   0   outside      -g12 
+
+
+% --- Reflective boundary condition:
+
+
+ set bc  1
+ 
+ 
+% --- Hex Graphite with central pipe 7.5cm inner:
+
+surf  k4   hexxprism  0   0   6.495   -230  230    
+surf  k15   cyl       0   0   3.5
+ 
+
+cell  ck4  f  graphite      -k4    k15      k1  -k5
+cell  ck7  f  fuel         -k15   k2  -k5   
+
+  
+  
+cell cj1    j  graphite        -k4   k3          k1  -k5
+cell cj2    j  fuel            -k3  k2  -k5
+  
+ 
+cell  ch1   h  graphite      -k4     k1  -k5
+ 
+ 
+ cell  cp1  p  graphite      -k4   k3      k1  -k5
+  
+
+
+pin v 
+void 
+
+
+% --- Lattice (type = 2  pin pitch = 13 cm):
+
+lat core  2  0.0 0.0  51 51  12.99
+
+v v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h
+ v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h
+  v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+   v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+    v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+     v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+      v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h
+       v v v v v v v v v v v v v v v v v v h h h h h h h h h j j j j j j j j j j j j j j j h h h h h h h h h
+        v v v v v v v v v v v v v v v v v h h h h h h h h j j j j j j j j j j j j j j j j j j h h h h h h h h	  
+         v v v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j h h h h h h h
+          v v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j j h h h h h h h	  
+           v v v v v v v v v v v v v v h h h h h h h j j j j j j j j j j j j j j j j j j j j j j j h h h h h h h	 
+            v v v v v v v v v v v v v h h h h h h h j j j j j j j j j f f f f f f j j j j j j j j j h h h h h h h
+             v v v v v v v v v v v v h h h h h h h j j j j j j j j f f f f f f f f f j j j j j j j j h h h h h h h
+              v v v v v v v v v v v h h h h h h h j j j j j j j f f f f f f f f f f f f j j j j j j j h h h h h h h
+               v v v v v v v v v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f j j j j j j h h h h h h h
+                v v v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                 v v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                  v v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                   v v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h 
+                    v v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                     v v v v h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h
+                      v v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h	  
+                       v v h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h	 	  
+                        v h h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h h
+                         h h h h h h h h j j j j j j f f f f f f f f f f f p f f f f f f f f f f f j j j j j j h h h h h h h h 
+                          h h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h h v	  
+                           h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v	  
+                            h h h h h h h j j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v v	  
+                             h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v
+                              h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v
+                               h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v	  
+                                h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v
+                                 h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v v
+                                  h h h h h h h j j j j j f f f f f f f f f f f f f f f f f f j j j j j h h h h h h h v v v v v v v v v
+                                   h h h h h h h j j j j j j f f f f f f f f f f f f f f f j j j j j j h h h h h h h v v v v v v v v v v
+                                    h h h h h h h j j j j j j j f f f f f f f f f f f f j j j j j j j h h h h h h h v v v v v v v v v v v
+                                     h h h h h h h j j j j j j j j f f f f f f f f f j j j j j j j j h h h h h h h v v v v v v v v v v v v
+                                      h h h h h h h j j j j j j j j j f f f f f f j j j j j j j j j h h h h h h h v v v v v v v v v v v v v
+                                       h h h h h h h j j j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v
+                                        h h h h h h h j j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v v
+                                         h h h h h h h j j j j j j j j j j j j j j j j j j j j j h h h h h h h v v v v v v v v v v v v v v v v
+                                          h h h h h h h h j j j j j j j j j j j j j j j j j j h h h h h h h h v v v v v v v v v v v v v v v v v
+                                           h h h h h h h h h j j j j j j j j j j j j j j j h h h h h h h h h v v v v v v v v v v v v v v v v v v
+                                            h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v
+                                             h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v
+					      h h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v
+					       h h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v
+					        h h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v
+					         h h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v v
+						  h h h h h h h h h h h h h h h h h h h h h h h h h h v v v v v v v v v v v v v v v v v v v v v v v v v
+	   
+
+	   
+% --- Geometry and mesh plots:
+%plot 3   1000  1000   235
+plot 31   1000  1000   0
+%plot 3   1000  1000   250
+%plot 1  500  500   0    
+%plot 2  500 500   0   
+
+%mesh 1 500 500  
+%mesh 2 500 500
+%mesh 3 500 500
+
+% -checkvolumes 1000000
+%set mcvol 10000000
+ set lost 100000000
+ /***************************************
+ * Settings for the burnup calculation *
+ ***************************************/
+
+
+% --- Material division for burnup calculation
+ 
+%div  fuel      sep 1   
+%div  graphite  sep 1
+
+ 
+ 
+
+% --- Nuclide inventory: these nuclides will be included in the
+%     depletion output file burn_dep.m. The list can be changed
+%     after the simulation has concluded if needed. Then you can run
+%     sss2 -rdep burn
+%     which will make Serpent re-read the inventory and re-produce the
+%     depletion output file.
+
+set inventory
+all
+
+
+% --- Use predictor corrector method for the depletion solution
+%     leli: Linear extrapolation on predictor
+%           Linear interpolation on corrector
+%     10 10: 10 substeps on predictor, 10 substeps on corrector
+
+%set pcc leli 10 10
+
+%set opti 1
+
+% --- Reduce unionized energy grid size in order to save some memory
+%     Use grid thinning with 5e-5 reconstruction tolerance between
+%     1e-9 and 15 MeV.
+
+set egrid 5e-5 1e-9 15.0
+ 
+  set power  2250E06
+  
+  
+ %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM 
+
+% --- Cut-offs:
+
+set fpcut   1E-6
+set stabcut 1E-12
+
+% --- Options for burnup calculation:
+
+set bumode  2  % CRAM method
+set pcc     0  % Predictor-corrector calculation on
+set xscalc  2  % Cross sections from spectrum
+set gcu -1
+
+mflow  rem1
+H	3.333E-02
+He	3.333E-02
+N	3.333E-02
+O	3.333E-02
+Ne	3.333E-02
+Ar	3.333E-02
+Kr	3.333E-02
+Nb	3.333E-02
+Mo	3.333E-02
+Tc	3.333E-02
+Ru	3.333E-02
+Rh	3.333E-02
+Pd	3.333E-02
+Ag	3.333E-02
+Sb	3.333E-02
+Te	3.333E-02
+Xe	3.333E-02
+Lu	3.333E-02
+Hf	3.333E-02
+Ta	3.333E-02
+W	3.333E-02
+Re	3.333E-02
+Os	3.333E-02
+Ir	3.333E-02
+Pt	3.333E-02
+Au	3.333E-02
+Rn	3.333E-02
+
+Zn	1.09196E-06
+Ga	1.09196E-06
+Ge	1.09196E-06
+As	1.09196E-06
+Se	1.09196E-06
+Br	1.09196E-06
+Rb	1.09196E-06
+Sr	1.09196E-06
+Y	1.09196E-06
+Zr	1.09196E-06
+Cd	1.09196E-06
+In	1.09196E-06
+Sn	1.09196E-06
+I	1.09196E-06
+Cs	1.09196E-06
+Ba	1.09196E-06
+La	1.09196E-06
+Ce	1.09196E-06
+Pr	1.09196E-06
+Nd	1.09196E-06
+Pm	1.09196E-06
+Sm	1.09196E-06
+Eu	1.09196E-06
+Gd	1.09196E-06
+Tb	1.09196E-06
+Dy	1.09196E-06
+Ho	1.09196E-06
+Er	1.09196E-06
+Tm	1.09196E-06
+Yb	1.09196E-06
+
+mflow rem2
+Pa	3.333E-02
+
+mflow feed1 
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.015E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+
+mat add     -4.1  burn 1  vol  1E+06
+
+%92238.09c    -0.40105
+%92235.09c    -0.09895
+%90232.09c    -0.5
+
+92233.09c      -0.5
+93237.09c      -0.0315
+94238.09c      -0.0135
+94239.09c      -0.2295
+94240.09c      -0.1075
+94241.09c      -0.0535
+94242.09c      -0.0335
+95241.09c      -0.017
+95243.09c      -0.0095
+96244.09c      -0.004
+96245.09c      -0.0005
+
+%94238.09c    -0.005
+%94239.09c    -0.3
+%94240.09c    -0.125
+%94241.09c    -0.05
+%94242.09c    -0.02
+%92233.09c    -0.5
+
+
+
+mat gastank  0.0 burn 1 vol 1E+06
+
+mat pa_tank  0.0 burn 1 vol 1E+06
+
+det 1 de 1 dt -3     %Division by lethargy width (“dt -3”)
+ene 1 3 1000  1E-11 2E1
+
+
+rep r1
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed1   0
+
+dep  pro r1
+daystep 
+365
+
+mflow feed2
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.682E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r2
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed2   0
+
+dep  pro r2
+daystep 
+365
+
+mflow feed3
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.615E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r3
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed3   0
+
+dep  pro r3
+daystep 
+365
+
+mflow feed4
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.3E-08
+Pu-238			1.3E-08
+Pu-239			1.3E-08
+Pu-240			1.3E-08
+Pu-241			1.3E-08
+Pu-242			1.3E-08
+Am-241			1.3E-08
+Am-243			1.3E-08
+Cm-244			1.3E-08
+Cm-245			1.3E-08
+U-233			6.543E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r4
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed4   0
+
+dep  pro r4
+daystep 
+365
+
+mflow feed5
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.3E-08
+Pu-238			1.3E-08
+Pu-239			1.3E-08
+Pu-240			1.3E-08
+Pu-241			1.3E-08
+Pu-242			1.3E-08
+Am-241			1.3E-08
+Am-243			1.3E-08
+Cm-244			1.3E-08
+Cm-245			1.3E-08
+U-233			6.476E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r5
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed5   0
+
+dep  pro r5
+daystep 
+365
+
+mflow feed6
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.420E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r6
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed6   0
+
+dep  pro r6
+daystep 
+365
+
+mflow feed7
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.377E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r7
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed7   0
+
+dep  pro r7
+daystep 
+365
+
+mflow feed8
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.787E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.319E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r8
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed8   0
+
+dep  pro r8
+daystep 
+365
+
+mflow feed9
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			6.280E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r9
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed9   0
+
+dep  pro r9
+daystep 
+365
+
+mflow feed10
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			6.244E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r10
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed10   0
+
+dep  pro r10
+daystep 
+365
+
+mflow feed11
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			6.206E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r11
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed11  0
+
+dep  pro r11
+daystep 
+365
+
+mflow feed12
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.4E-08
+Pu-238			1.4E-08
+Pu-239			1.4E-08
+Pu-240			1.4E-08
+Pu-241			1.4E-08
+Pu-242			1.4E-08
+Am-241			1.4E-08
+Am-243			1.4E-08
+Cm-244			1.4E-08
+Cm-245			1.4E-08
+U-233			6.168E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r12
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed12   0
+
+dep  pro r12
+daystep 
+365
+
+mflow feed13
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			6.106E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r13
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed13   0
+
+dep  pro r13
+daystep 
+365
+
+mflow feed14
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			6.076E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r14
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed14   0
+
+dep  pro r14
+daystep 
+365
+
+mflow feed15
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			6.031E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r15
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed15   0
+
+dep  pro r15
+daystep 
+365
+
+mflow feed16
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			5.994E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r16
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed16   0
+
+dep  pro r16
+daystep 
+365
+
+mflow feed17
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			5.950E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r17
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed17   0
+
+dep  pro r17
+daystep 
+365
+
+mflow feed18
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			5.912E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+
+rep r18
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed18   0
+
+dep  pro r18
+daystep 
+365
+
+mflow feed19
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			5.879E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r19
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed19   0
+
+dep  pro r19
+daystep 
+365
+
+mflow feed20
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.4E-08
+Pu-238			1.4E-08
+Pu-239			1.4E-08
+Pu-240			1.4E-08
+Pu-241			1.4E-08
+Pu-242			1.4E-08
+Am-241			1.4E-08
+Am-243			1.4E-08
+Cm-244			1.4E-08
+Cm-245			1.4E-08
+U-233			5.838E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r20
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed20   0
+
+dep  pro r20
+daystep 
+365
+
+mflow feed21
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.780E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r21
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed21   0
+
+dep  pro r21
+daystep 
+365
+
+mflow feed22
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			5.739E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r22
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed22   0
+
+dep  pro r22
+daystep 
+365
+
+mflow feed23
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.9E-08
+Pu-238			0.9E-08
+Pu-239			0.9E-08
+Pu-240			0.9E-08
+Pu-241			0.9E-08
+Pu-242			0.9E-08
+Am-241			0.9E-08
+Am-243			0.9E-08
+Cm-244			0.9E-08
+Cm-245			0.9E-08
+U-233			5.694E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r23
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed23   0
+
+dep  pro r23
+daystep 
+365
+
+mflow feed24
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			5.669E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r24
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed24   0
+
+dep  pro r24
+daystep 
+365
+
+mflow feed25
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.629E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r25
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed25   0
+
+dep  pro r25
+daystep 
+365
+
+mflow feed26
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.2E-08
+Pu-238			1.2E-08
+Pu-239			1.2E-08
+Pu-240			1.2E-08
+Pu-241			1.2E-08
+Pu-242			1.2E-08
+Am-241			1.2E-08
+Am-243			1.2E-08
+Cm-244			1.2E-08
+Cm-245			1.2E-08
+U-233			5.589E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r26
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed26   0
+
+dep  pro r26
+daystep 
+365
+
+mflow feed27
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.4E-08
+Pu-238			1.4E-08
+Pu-239			1.4E-08
+Pu-240			1.4E-08
+Pu-241			1.4E-08
+Pu-242			1.4E-08
+Am-241			1.4E-08
+Am-243			1.4E-08
+Cm-244			1.4E-08
+Cm-245			1.4E-08
+U-233			5.545E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r27
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed27   0
+
+dep  pro r27
+daystep 
+365
+
+mflow feed28
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.15E-08
+Pu-238			1.15E-08
+Pu-239			1.15E-08
+Pu-240			1.15E-08
+Pu-241			1.15E-08
+Pu-242			1.15E-08
+Am-241			1.15E-08
+Am-243			1.15E-08
+Cm-244			1.15E-08
+Cm-245			1.15E-08
+U-233			5.480E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r28
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed28   0
+
+dep  pro r28
+daystep 
+365
+
+mflow feed29
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.9E-08
+Pu-238			0.9E-08
+Pu-239			0.9E-08
+Pu-240			0.9E-08
+Pu-241			0.9E-08
+Pu-242			0.9E-08
+Am-241			0.9E-08
+Am-243			0.9E-08
+Cm-244			0.9E-08
+Cm-245			0.9E-08
+U-233			5.432E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r29
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed29   0
+
+dep  pro r29
+daystep 
+365
+
+mflow feed30
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.407E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r30
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed30   0
+
+dep  pro r30
+daystep 
+365
+
+mflow feed31
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.372E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r31
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed31   0
+
+dep  pro r31
+daystep 
+365
+
+mflow feed32
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.336E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r32
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed32   0
+
+dep  pro r32
+daystep 
+365
+
+mflow feed33
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.05E-08
+Pu-238			1.05E-08
+Pu-239			1.05E-08
+Pu-240			1.05E-08
+Pu-241			1.05E-08
+Pu-242			1.05E-08
+Am-241			1.05E-08
+Am-243			1.05E-08
+Cm-244			1.05E-08
+Cm-245			1.05E-08
+U-233			5.299E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r33
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed33   0
+
+dep  pro r33
+daystep 
+365
+
+mflow feed34
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.25E-08
+Pu-238			1.25E-08
+Pu-239			1.25E-08
+Pu-240			1.25E-08
+Pu-241			1.25E-08
+Pu-242			1.25E-08
+Am-241			1.25E-08
+Am-243			1.25E-08
+Cm-244			1.25E-08
+Cm-245			1.25E-08
+U-233			5.263E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r34
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed34   0
+
+dep  pro r34
+daystep 
+365
+
+mflow feed35
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.203E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r35
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed35   0
+
+dep  pro r35
+daystep 
+365
+
+mflow feed36
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.164E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r36
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed36   0
+
+dep  pro r36
+daystep 
+365
+
+mflow feed37
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.4E-08
+Pu-238			1.4E-08
+Pu-239			1.4E-08
+Pu-240			1.4E-08
+Pu-241			1.4E-08
+Pu-242			1.4E-08
+Am-241			1.4E-08
+Am-243			1.4E-08
+Cm-244			1.4E-08
+Cm-245			1.4E-08
+U-233			5.1307E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r37
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed37   0
+
+dep  pro r37
+daystep 
+365
+
+mflow feed38
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			5.070E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08	
+
+rep r38
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed38   0
+
+dep  pro r38
+daystep 
+365
+
+mflow feed39
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.9E-08
+Pu-238			0.9E-08
+Pu-239			0.9E-08
+Pu-240			0.9E-08
+Pu-241			0.9E-08
+Pu-242			0.9E-08
+Am-241			0.9E-08
+Am-243			0.9E-08
+Cm-244			0.9E-08
+Cm-245			0.9E-08
+U-233			5.031E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r39
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed39   0
+
+dep  pro r39
+daystep 
+365
+
+mflow feed40
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.999E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r40
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed40  0
+
+dep  pro r40
+daystep 
+365
+
+mflow feed41
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			4.962E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r41
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed41   0
+
+dep  pro r41
+daystep 
+365
+
+mflow feed42
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.921E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r42
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed42   0
+
+dep  pro r42
+daystep 
+365
+
+mflow feed43
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.05E-08
+Pu-238			1.05E-08
+Pu-239			1.05E-08
+Pu-240			1.05E-08
+Pu-241			1.05E-08
+Pu-242			1.05E-08
+Am-241			1.05E-08
+Am-243			1.05E-08
+Cm-244			1.05E-08
+Cm-245			1.05E-08
+U-233			4.887E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r43
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed43   0
+
+dep  pro r43
+daystep 
+365
+
+mflow feed44
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.839E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r44
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed44  0
+
+dep  pro r44
+daystep 
+365
+
+
+mflow feed45
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.801E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r45
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed45   0
+
+dep  pro r45
+daystep 
+365
+
+mflow feed46
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			4.767E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r46
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed46   0
+
+dep  pro r46
+daystep 
+365
+
+mflow feed47
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.720E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r47
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed47   0
+
+dep  pro r47
+daystep 
+365
+
+mflow feed48
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.8E-08
+Pu-238			0.8E-08
+Pu-239			0.8E-08
+Pu-240			0.8E-08
+Pu-241			0.8E-08
+Pu-242			0.8E-08
+Am-241			0.8E-08
+Am-243			0.8E-08
+Cm-244			0.8E-08
+Cm-245			0.8E-08
+U-233			4.685E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r48
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed48   0
+
+dep  pro r48
+daystep 
+365
+
+mflow feed49
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.3E-08
+Pu-238			1.3E-08
+Pu-239			1.3E-08
+Pu-240			1.3E-08
+Pu-241			1.3E-08
+Pu-242			1.3E-08
+Am-241			1.3E-08
+Am-243			1.3E-08
+Cm-244			1.3E-08
+Cm-245			1.3E-08
+U-233			4.662E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r49
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed49   0
+
+dep  pro r49
+daystep 
+365
+
+
+mflow feed50
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.9E-08
+Pu-238			0.9E-08
+Pu-239			0.9E-08
+Pu-240			0.9E-08
+Pu-241			0.9E-08
+Pu-242			0.9E-08
+Am-241			0.9E-08
+Am-243			0.9E-08
+Cm-244			0.9E-08
+Cm-245			0.9E-08
+U-233			4.611E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r50
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed50   0
+
+dep  pro r50
+daystep 
+365
+
+mflow feed51
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1.1E-08
+Pu-238			1.1E-08
+Pu-239			1.1E-08
+Pu-240			1.1E-08
+Pu-241			1.1E-08
+Pu-242			1.1E-08
+Am-241			1.1E-08
+Am-243			1.1E-08
+Cm-244			1.1E-08
+Cm-245			1.1E-08
+U-233			4.580E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r51
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed51   0
+
+dep  pro r51
+daystep 
+365
+
+mflow feed52
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.539E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r52
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed52   0
+
+dep  pro r52
+daystep 
+365
+
+
+mflow feed53
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.505E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r53
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed53   0
+
+dep  pro r53
+daystep 
+365
+
+mflow feed54
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.470E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r54
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed54   0
+
+dep  pro r54
+daystep 
+365
+
+mflow feed55
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.9E-08
+Pu-238			0.9E-08
+Pu-239			0.9E-08
+Pu-240			0.9E-08
+Pu-241			0.9E-08
+Pu-242			0.9E-08
+Am-241			0.9E-08
+Am-243			0.9E-08
+Cm-244			0.9E-08
+Cm-245			0.9E-08
+U-233			4.431E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r55
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed55   0
+
+dep  pro r55
+daystep 
+365
+
+
+mflow feed56
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.408E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r56
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed56   0
+
+dep  pro r56
+daystep 
+365
+
+
+mflow feed57
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.95E-08
+Pu-238			0.95E-08
+Pu-239			0.95E-08
+Pu-240			0.95E-08
+Pu-241			0.95E-08
+Pu-242			0.95E-08
+Am-241			0.95E-08
+Am-243			0.95E-08
+Cm-244			0.95E-08
+Cm-245			0.95E-08
+U-233			4.369E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+
+rep r57
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed57   0
+
+dep  pro r57
+daystep 
+365
+
+mflow feed58
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			0.95E-08
+Pu-238			0.95E-08
+Pu-239			0.95E-08
+Pu-240			0.95E-08
+Pu-241			0.95E-08
+Pu-242			0.95E-08
+Am-241			0.95E-08
+Am-243			0.95E-08
+Cm-244			0.95E-08
+Cm-245			0.95E-08
+U-233			4.338E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r58
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed58   0
+
+dep  pro r58
+daystep 
+365
+
+
+mflow feed59
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.304E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+ 
+rep r59
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed41   0
+
+dep  pro r59
+daystep 
+365
+
+
+mflow feed60
+%Th-232	        1.3E-08
+%Pu-238			1.65E-08
+%Pu-239			1.65E-08
+%Pu-240			1.65E-08
+%Pu-241			1.65E-08
+%Pu-242			1.65E-08
+%			6.528E-09
+
+Np-237			1E-08
+Pu-238			1E-08
+Pu-239			1E-08
+Pu-240			1E-08
+Pu-241			1E-08
+Pu-242			1E-08
+Am-241			1E-08
+Am-243			1E-08
+Cm-244			1E-08
+Cm-245			1E-08
+U-233			4.252E-09
+
+%U-238		1.1E-08
+%U-235		1.1E-08
+
+rep r60
+rc fuel   gastank   rem1    1
+rc fuel   pa_tank   rem2    1
+rc add    fuel      feed60   0
+
+dep  pro r60
+daystep 
+365
+
+%-------------------------------------------------- 
+%-------------------------------------------------- 
+%-------------------------------------------------- 
+
+%-------------------------------------------------- 
+%-------------------------------------------------- 
+%-------------------------------------------------- 
