@@ -1,4 +1,4 @@
-include "../../../geometry/tmsr_full"
+include "../geometry/tmsr_full"
 include "./mat_comp"
 % --- Cross section data library file path:
 
@@ -11,9 +11,8 @@ set nfylib "sss_endfb7.nfy"
 
 % --- Neutron population and criticality cycles:
 
- set pop  75000  800   130
-  %   set gcu -1
-   %set nbuf 15
+ set pop  150000  800   250
+ set bc 1
 
 
 % --- SDMSR -------------------
@@ -123,30 +122,29 @@ mat hastelloy  -8.86   vol  2.2225E+07    %outer core shell hastelloy (SiC?)
 
 %set pcc leli 10 10
 
-set opti 3
+%set opti 3
 
 % --- Reduce unionized energy grid size in order to save some memory
 %     Use grid thinning with 5e-5 reconstruction tolerance between
 %     1e-9 and 15 MeV.
 
-set egrid 5e-5 1e-9 15.0
+% set egrid 5e-5 1e-9 15.0
 
-set power  562.5e6 % 1/4 of full power 2.25Gwth
-set lost -1
-
+set power  562.5e+6 % 1/4 of full power 2.25Gwth
+% set lost -1
 
  %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM
 
 % --- Cut-offs:
 
- set fpcut   1E-6
- set stabcut 1E-12
+% set fpcut   1E-6
+% set stabcut 1E-12
 
 % --- Options for burnup calculation:
 
-set bumode  2  % CRAM method
-set pcc     0  % Predictor-corrector calculation on
-set xscalc  2  % Cross sections from spectrum
+%set bumode  2  % CRAM method
+%set pcc     0  % Predictor-corrector calculation on
+%set xscalc  2  % Cross sections from spectrum
 
 % ----------------------------------------------------------------
 
