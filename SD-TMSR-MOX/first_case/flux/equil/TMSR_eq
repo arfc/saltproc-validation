@@ -14,7 +14,7 @@ set declib "sss_jeff33.dec"
 
 % --- SDMSR -------------------
 
-set title "SD-TMSR, Th/U-233, initial, neutron flux"
+set title "SD-TMSR, Th/U-233, equilibrium, neutron flux"
 
 /************************
  * Material definitions *
