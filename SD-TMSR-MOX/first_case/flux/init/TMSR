@@ -24,7 +24,7 @@ mat graphite        -2.3       tmp 900   vol 1.5941E+08         moder graphiteLi
 therm graphiteLib 900 gr05.32t gr06.32t % 900K graphite using ENDF/B-VII thermal data
 
 
-mat fuel      -3.3   tmp 900  burn 1   vol  5.2997E+07     rgb 150  255  150       % 0.205
+mat fuel      -3.3   vol  5.2997E+07     rgb 150  255  150       % 0.205
            3007.09c        -0.075330968
 		   3006.09c        -3.76674E-06
 		   4009.09c        -0.024277005
@@ -277,7 +277,7 @@ v v v v v v v v v v v v v v v v v v v v v v v v v h h h h h h h h h h h h h h h 
 
 % set egrid 5e-5 1e-9 15.0
 
-  set power  2250e6
+  set power  562.5e+6
 
 
  %or set powdens 2.8e-2 KW/gHM  %2250e3/78.16e6=2.8e-2KW/gHM
