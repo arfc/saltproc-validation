@@ -6,7 +6,7 @@ set declib "sss_jeff33.dec"
 
 % --- Neutron population and criticality cycles:
 
- set pop  150000  800   250
+ set pop  50000  400   50
  set bc 1
    set nbuf  70
 
@@ -21,7 +21,7 @@ set title "SD-TMSR, Th/U-233, initial, neutron flux"
 
 mat graphite        -2.3       tmp 900   vol 1.5941E+08         moder graphiteLib   6000 % rgb 255 255 150burn 1                  %vol 8.2e6
  6000.09c          -1.00
-therm graphiteLib 900 gre7.18t gre7.20t % 900K graphite using ENDF/B-VII thermal data
+therm graphiteLib 900 gr05.32t gr06.32t % 900K graphite using ENDF/B-VII thermal data
 
 
 mat fuel      -3.3   tmp 900  burn 1   vol  5.2997E+07     rgb 150  255  150       % 0.205
