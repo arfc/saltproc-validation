@@ -1,0 +1,76 @@
+set title "Eq: Compute all temperature coefficients from 900 to 1000K for Pu case"
+include "./eq_fuel_2.ini"
+%include "./init_fuel_2.ini"
+include "./non_burnable_mats.ini"
+include "./sd-tmsr_geometry.ini"
+
+%set acelib "sss_jeff312_8_9_10.xsdata"
+%set acelib "/home/andrei2/serpent/xsdata/endfb7/sss_endfb7.xsdata"
+set acelib "sss_jeff312.xsdata"
+%set declib "sss_jeff33.dec"
+%set nfylib "/projects/sciteam/bahg/serpent/xsdata/jeff312/sss_jeff33.nfy"
+%set sfylib "/projects/sciteam/bahg/serpent/xsdata/jeff312/sss_jeff33.sfy"
+
+% --- Neutron population and criticality cycles:
+
+set pop 25000 1200 50 % 300 000
+
+set power  562.5e+6
+%set nbuf  70
+% --- Geometry and mesh plots:
+%plot 33 2000 2000 0.0
+%plot 13 2000 2000 4.5
+
+set opti 3
+% --- Nominal branch
+branch nom
+
+% ---- Branch for FTC
+branch ftc_temp
+stp fuel      -3.3 1000         % density for 1000K
+
+branch ftc_den
+stp fuel      -3.233 900        % Doppler for 1000K
+
+branch ftch
+stp fuel      -3.233 1000         % density and Doppler for 1000K
+
+% ---- Branch for MTC
+branch mtc_temp
+stp graphite  -2.3   1000 graphiteLib gr06.32t gr06.32t
+
+%branch mtc_den
+%stp graphite  -2.329991 900 graphiteLib gr05.32t gr06.32t
+
+%branch mtch % 1000K
+%stp graphite  -2.329991 1000 graphiteLib gr06.32t gr06.32t
+%repu M M1000
+
+% ---- Branch for ITC
+branch itch
+stp fuel      -3.233 1000         % density and Doppler for 1000K
+stp graphite  -2.3   1000 graphiteLib gr06.32t gr06.32t
+%stp hastelloy -8.86  1000
+%stp B4C       -2.52  1000
+%repu M M1000
+
+% --- Parameters included in coefficient output:
+set coefpara 1
+IMP_KEFF
+BETA_EFF
+LAMBDA
+SIX_FF_ETA
+SIX_FF_F
+SIX_FF_P
+SIX_FF_EPSILON
+SIX_FF_LF
+SIX_FF_LT
+SIX_FF_KINF
+SIX_FF_KEFF
+
+% --- Coefficient matrix: (full set of variations: 3x3x3x2)
+coef 1
+0
+%16 nom ftc0r ftc0d ftc0 mtc0r mtc0d mtc0 itc0 ftc1r ftc1d ftc1 mtc1r mtc1d mtc1 itc1 crw0
+6 nom ftc_den ftc_temp ftch mtc_temp itch
+%2 nom mtc_den

@@ -29,7 +29,7 @@ mat graphite  -2.3 tmp 1000 vol 1.5941E+08 moder graphiteLib   6000
 %therm graphiteLib 900 gre7.18t gre7.20t % 900K graphite
 therm graphiteLib  gre7.20t               % 1000K graphite
 
-mat fuel      -3.233   tmp 1000  vol  5.2997E+07     rgb 150  255  150       % 1.6 + 10.9% burn 1  fuel salt  vol 5.535e6
+mat fuel      -3.233   tmp 1000  vol  5.2997E+07 rgb 150  255  150       % 1.6 + 10.9% burn 1  fuel salt  vol 5.535e6
            	3007.09c        -0.075330936
 		3006.09c        -3.76674E-06
 		4009.09c        -0.024276994
